@@ -23,6 +23,7 @@ def bootstrapping(N, M, x):
     dict = {'Mean Bootstrap': mean_bootstrap}
     mean_bootstrap = pd.DataFrame(dict)
 
+    #Sắp xếp lai cái giá trị trong mean_bootstrap theo thứ tự tăng dần
     sorted_df = mean_bootstrap.sort_values(by='Mean Bootstrap', ascending=True)
     lower_bound = sorted_df.iloc[round(M*x)]
     upper_bound = sorted_df.iloc[round(M*(1-x))]
@@ -31,7 +32,7 @@ def bootstrapping(N, M, x):
 
             
 
-
+#init original sample
 original_samples = [81, 32, 49, 54, 44, 74, 98, 42, 54, 51, 69, 49, 43, 5, 1, 5, 35, 55, 4, 20, 25, 34, 31, 65, 46, 92, 2, 4, 41, 38]
 df = pd.DataFrame(original_samples)
 mean_bootstrap, lower_bound, upper_bound = bootstrapping(10,201,0.05) # n, M, x%
@@ -40,8 +41,8 @@ mean_bootstrap, lower_bound, upper_bound = bootstrapping(10,201,0.05) # n, M, x%
 sns.histplot(mean_bootstrap['Mean Bootstrap'], kde=True ,color = 'navy', bins=50)
 
 # khoang tin cay
-print(int(lower_bound))
-print(int(upper_bound))
+print(lower_bound)
+print(upper_bound)
 
 plt.show()
 
