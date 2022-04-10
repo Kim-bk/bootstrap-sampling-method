@@ -20,11 +20,11 @@ def bootstrapping(df, N, M, x):
         mean_bootstrap.append(float(new_df.mean(axis=0)))
 
 
-    dict = {'Mean BMI of Heart Disease': mean_bootstrap}
+    dict = {'Mean Bootstrap (Explains concepts)': mean_bootstrap}
     mean_bootstrap = pd.DataFrame(dict)
 
     #Sắp xếp lai cái giá trị trong mean_bootstrap theo thứ tự tăng dần
-    sorted_df = mean_bootstrap.sort_values(by='Mean BMI of Heart Disease', ascending=True)
+    sorted_df = mean_bootstrap.sort_values(by='Mean Bootstrap (Explains concepts)', ascending=True)
     lower_bound = sorted_df.iloc[round(M*x)]
     upper_bound = sorted_df.iloc[round(M*(1-x))]
     mean_line = sorted_df.mean()
@@ -38,16 +38,16 @@ def bootstrapping(df, N, M, x):
 # df = pd.DataFrame(original_samples)
 
 # Read file csv to data frame
-df = pd.read_csv('../bootstrap-sampling-method/heart_2020_cleaned.csv', delimiter=',')
+df = pd.read_csv('../bootstrap-sampling-method/StudentsPerformance.csv', delimiter=',')
 
 # Get first 1000 rows BMI that has HeartDisease are 'Yes'
-df_heart_disease = (df['BMI'][df['HeartDisease'] == "Yes"]).head(900) #lấy 900 mẫu đàu tiên
+df_explain_concept = df['math score']
 
 
-mean_bootstrap, lower_bound, upper_bound, mean_line = bootstrapping(df_heart_disease, 300,6000,0.05) # dataframe, n, M, x%
+mean_bootstrap, lower_bound, upper_bound, mean_line = bootstrapping(df_explain_concept, 333,6666,0.05) # dataframe, n, M, x%
 
 #  histogram
-sns.histplot(mean_bootstrap['Mean BMI of Heart Disease'], kde=True ,color = 'brown', bins=20)
+sns.histplot(mean_bootstrap['Mean Bootstrap (Explains concepts)'], kde=True ,color = 'brown', bins=20)
 
 # khoảng tin cậy
 lower_bound = float("{:.2f}".format(float(lower_bound)))
@@ -64,7 +64,7 @@ plt.axvline(mean_line, 0,20, color = 'k', linestyle = '--')
 
 plt.text(lower_bound, 700, str(lower_bound), fontsize=10)
 plt.text(upper_bound, 700, str(upper_bound), fontsize=10)
-plt.text(mean_line-0.15, 700, "Mean: " + str(mean_line), fontsize=10)
+plt.text(mean_line-0.05, 700, "Mean: " + str(mean_line), fontsize=10)
 
 plt.show()
 
