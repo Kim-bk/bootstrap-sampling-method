@@ -8,7 +8,7 @@ import seaborn as sns
 
 
 
-def bootstrapping(N, M, x):
+def bootstrapping(df, N, M, x):
     upper_bound = 0
     lower_bound = 0
     mean_bootstrap = []
@@ -20,29 +20,52 @@ def bootstrapping(N, M, x):
         mean_bootstrap.append(float(new_df.mean(axis=0)))
 
 
-    dict = {'Mean Bootstrap': mean_bootstrap}
+    dict = {'Mean BMI of Heart Disease': mean_bootstrap}
     mean_bootstrap = pd.DataFrame(dict)
 
     #Sắp xếp lai cái giá trị trong mean_bootstrap theo thứ tự tăng dần
-    sorted_df = mean_bootstrap.sort_values(by='Mean Bootstrap', ascending=True)
+    sorted_df = mean_bootstrap.sort_values(by='Mean BMI of Heart Disease', ascending=True)
     lower_bound = sorted_df.iloc[round(M*x)]
     upper_bound = sorted_df.iloc[round(M*(1-x))]
+    mean_line = sorted_df.mean()
 
-    return mean_bootstrap, lower_bound, upper_bound
+    return mean_bootstrap, lower_bound, upper_bound, mean_line
 
             
 
 #init original sample
-original_samples = [81, 32, 49, 54, 44, 74, 98, 42, 54, 51, 69, 49, 43, 5, 1, 5, 35, 55, 4, 20, 25, 34, 31, 65, 46, 92, 2, 4, 41, 38]
-df = pd.DataFrame(original_samples)
-mean_bootstrap, lower_bound, upper_bound = bootstrapping(10,201,0.05) # n, M, x%
+# original_samples = [81, 32, 49, 54, 44, 74, 98, 42, 54, 51, 69, 49, 43, 5, 1, 5, 35, 55, 4, 20, 25, 34, 31, 65, 46, 92, 2, 4, 41, 38]
+# df = pd.DataFrame(original_samples)
 
-# histogram
-sns.histplot(mean_bootstrap['Mean Bootstrap'], kde=True ,color = 'navy', bins=50)
+# Read file csv to data frame
+df = pd.read_csv('../bootstrap-sampling-method/heart_2020_cleaned.csv', delimiter=',')
 
-# khoang tin cay
-print(lower_bound)
-print(upper_bound)
+# Get first 1000 rows BMI that has HeartDisease are 'Yes'
+df_heart_disease = (df['BMI'][df['HeartDisease'] == "Yes"]).head(900) #lấy 900 mẫu đàu tiên
+
+
+mean_bootstrap, lower_bound, upper_bound, mean_line = bootstrapping(df_heart_disease, 300,6000,0.05) # dataframe, n, M, x%
+
+#  histogram
+sns.histplot(mean_bootstrap['Mean BMI of Heart Disease'], kde=True ,color = 'brown', bins=20)
+
+# khoảng tin cậy
+lower_bound = float("{:.2f}".format(float(lower_bound)))
+upper_bound = float( "{:.2f}".format(float(upper_bound)))
+mean_line = float( "{:.2f}".format(float(mean_line)))
+
+print('Giới hạn dưới: ' + str(lower_bound))
+print('Giới hạn trên: '  + str(upper_bound))
+print('Mean: '  + str(mean_line))
+
+plt.axvline(lower_bound, 0,20)
+plt.axvline(upper_bound, 0,20)
+plt.axvline(mean_line, 0,20, color = 'k', linestyle = '--')
+
+plt.text(lower_bound, 700, str(lower_bound), fontsize=10)
+plt.text(upper_bound, 700, str(upper_bound), fontsize=10)
+plt.text(mean_line-0.15, 700, "Mean: " + str(mean_line), fontsize=10)
 
 plt.show()
+
 
